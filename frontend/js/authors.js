@@ -26,7 +26,7 @@ function renderAuthors(authors) {
       const bio = author.bio || "";
       const excerpt = bio.length > 120 ? `${bio.slice(0, 120)}…` : bio;
       return `
-        <a class="card card-link" href="author.html?id=${author._id}">
+        <a class="card card-link" href="/author?id=${author._id}">
           <h3>${escapeHtml(author.name)}</h3>
           <p>${escapeHtml(excerpt)}</p>
         </a>
@@ -86,7 +86,7 @@ function renderAuthorDetail(author, books) {
   const actions = isLoggedIn()
     ? `
       <div class="detail-actions">
-        <a class="btn btn-secondary" href="author-form.html?id=${author._id}">Edit</a>
+        <a class="btn btn-secondary" href="/author-form?id=${author._id}">Edit</a>
         <button type="button" class="btn btn-danger" id="delete-author-btn">Delete</button>
       </div>
     `
@@ -96,7 +96,7 @@ function renderAuthorDetail(author, books) {
     ? `<div class="grid">${books
         .map(
           (book) => `
-        <a class="book-card" href="book.html?id=${book._id}">
+        <a class="book-card" href="/book?id=${book._id}">
           <img class="book-cover" src="${coverImageUrl(book.coverImage)}" alt="${escapeHtml(book.title)} cover" />
           <div class="book-card-body">
             <div class="book-card-title">${escapeHtml(book.title)}</div>
@@ -131,7 +131,7 @@ async function handleDeleteAuthor(id) {
 
   try {
     await apiFetch(`/authors/${id}`, { method: "DELETE" });
-    window.location.href = "authors.html";
+    window.location.href = "/authors";
   } catch (err) {
     alert(err.message);
   }
@@ -187,13 +187,13 @@ async function handleAuthorFormSubmit(event) {
         method: "PUT",
         body: { name, bio, birthDate },
       });
-      window.location.href = `author.html?id=${editingAuthorId}`;
+      window.location.href = `/author?id=${editingAuthorId}`;
     } else {
       const res = await apiFetch("/authors", {
         method: "POST",
         body: { name, bio, birthDate },
       });
-      window.location.href = `author.html?id=${res.data._id}`;
+      window.location.href = `/author?id=${res.data._id}`;
     }
   } catch (err) {
     showAlert("form-message", err.message);

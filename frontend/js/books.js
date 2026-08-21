@@ -25,7 +25,7 @@ function renderBooks(books) {
   grid.innerHTML = books
     .map(
       (book) => `
-    <a class="book-card" href="book.html?id=${book._id}">
+    <a class="book-card" href="/book?id=${book._id}">
       <img class="book-cover" src="${coverImageUrl(book.coverImage)}" alt="${escapeHtml(book.title)} cover" />
       <div class="book-card-body">
         <div class="book-card-title">${escapeHtml(book.title)}</div>
@@ -83,13 +83,13 @@ function renderBookDetail(book) {
   const author = book.author || {};
 
   const authorLink = author._id
-    ? `<a href="author.html?id=${author._id}">${escapeHtml(author.name || "Unknown author")}</a>`
+    ? `<a href="/author?id=${author._id}">${escapeHtml(author.name || "Unknown author")}</a>`
     : escapeHtml(author.name || "Unknown author");
 
   const actions = isLoggedIn()
     ? `
       <div class="detail-actions">
-        <a class="btn btn-secondary" href="book-form.html?id=${book._id}">Edit</a>
+        <a class="btn btn-secondary" href="/book-form?id=${book._id}">Edit</a>
         <button type="button" class="btn btn-danger" id="delete-book-btn">Delete</button>
       </div>
     `
@@ -120,7 +120,7 @@ async function handleDeleteBook(id) {
 
   try {
     await apiFetch(`/books/${id}`, { method: "DELETE" });
-    window.location.href = "index.html";
+    window.location.href = "/";
   } catch (err) {
     alert(err.message);
   }
@@ -219,7 +219,7 @@ async function handleBookFormSubmit(event) {
           description,
         },
       });
-      window.location.href = `book.html?id=${editingBookId}`;
+      window.location.href = `/book?id=${editingBookId}`;
     } else {
       const coverFile = document.getElementById("cover-image").files[0];
       const formData = new FormData();
@@ -230,7 +230,7 @@ async function handleBookFormSubmit(event) {
       formData.append("coverImage", coverFile);
 
       const res = await apiFetch("/books", { method: "POST", isForm: true, body: formData });
-      window.location.href = `book.html?id=${res.data._id}`;
+      window.location.href = `/book?id=${res.data._id}`;
     }
   } catch (err) {
     showAlert("form-message", err.message);

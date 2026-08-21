@@ -16,7 +16,7 @@ async function handleLoginSubmit(event) {
       body: { email, password },
     });
     saveSession(res.token, res.data);
-    window.location.href = "index.html";
+    window.location.href = "/";
   } catch (err) {
     showAlert("form-message", err.message);
     submitBtn.disabled = false;
@@ -45,7 +45,7 @@ async function handleRegisterSubmit(event) {
       auth: false,
       body: { name, email, password },
     });
-    window.location.href = "login.html?registered=1";
+    window.location.href = "/login?registered=1";
   } catch (err) {
     showAlert("form-message", err.message);
     submitBtn.disabled = false;
@@ -54,7 +54,7 @@ async function handleRegisterSubmit(event) {
 
 function initLoginPage() {
   if (isLoggedIn()) {
-    window.location.href = "index.html";
+    window.location.href = "/";
     return;
   }
   if (getQueryParam("registered")) {
@@ -68,7 +68,7 @@ function initLoginPage() {
 
 function initRegisterPage() {
   if (isLoggedIn()) {
-    window.location.href = "index.html";
+    window.location.href = "/";
     return;
   }
   document.getElementById("register-form").addEventListener("submit", handleRegisterSubmit);

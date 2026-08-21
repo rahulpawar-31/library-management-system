@@ -53,7 +53,7 @@ async function handleResetPassword(event) {
       auth: false,
       body: { email, otp, newPassword },
     });
-    window.location.href = "login.html?reset=1";
+    window.location.href = "/login?reset=1";
   } catch (err) {
     showAlert("form-message", err.message);
     submitBtn.disabled = false;

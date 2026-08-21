@@ -8,18 +8,21 @@ function renderNavbar() {
   const user = getUser();
   const loggedIn = isLoggedIn();
   const admin = isAdmin();
-  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  // Normalize both "/login" and "/login.html" (nginx serves either) to the
+  // same clean path so the active-link check matches regardless of which
+  // form the user actually navigated with.
+  const currentPage = window.location.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
   const linkClass = (page) => (currentPage === page ? "active" : "");
 
   const links = [
-    `<a href="index.html" class="${linkClass("index.html")}">Books</a>`,
-    `<a href="authors.html" class="${linkClass("authors.html")}">Authors</a>`,
+    `<a href="/" class="${linkClass("/")}">Books</a>`,
+    `<a href="/authors" class="${linkClass("/authors")}">Authors</a>`,
   ];
 
   if (loggedIn) {
-    links.push(`<a href="book-form.html" class="${linkClass("book-form.html")}">Add Book</a>`);
+    links.push(`<a href="/book-form" class="${linkClass("/book-form")}">Add Book</a>`);
     if (admin) {
-      links.push(`<a href="admin-users.html" class="${linkClass("admin-users.html")}">Manage Users</a>`);
+      links.push(`<a href="/admin-users" class="${linkClass("/admin-users")}">Manage Users</a>`);
     }
   }
 
@@ -29,18 +32,18 @@ function renderNavbar() {
         Hi, ${escapeHtml(user?.name || "there")}
         ${admin ? '<span class="badge badge-admin">admin</span>' : ""}
       </span>
-      <a href="profile.html" class="${linkClass("profile.html")}">Profile</a>
+      <a href="/profile" class="${linkClass("/profile")}">Profile</a>
       <button type="button" class="btn-link" id="logout-btn">Logout</button>
     `
     : `
-      <a href="login.html" class="${linkClass("login.html")}">Login</a>
-      <a href="register.html" class="${linkClass("register.html")}">Register</a>
+      <a href="/login" class="${linkClass("/login")}">Login</a>
+      <a href="/register" class="${linkClass("/register")}">Register</a>
     `;
 
   container.innerHTML = `
     <nav class="navbar">
       <div class="navbar-inner">
-        <a href="index.html" class="navbar-brand">Library</a>
+        <a href="/" class="navbar-brand">Library</a>
         <div class="navbar-links">
           ${links.join("")}
           ${sessionLinks}
@@ -53,7 +56,7 @@ function renderNavbar() {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       clearSession();
-      window.location.href = "index.html";
+      window.location.href = "/";
     });
   }
 }
@@ -63,7 +66,7 @@ function renderNavbar() {
 
 function requireLogin() {
   if (!isLoggedIn()) {
-    window.location.href = "login.html";
+    window.location.href = "/login";
     return false;
   }
   return true;
@@ -71,7 +74,7 @@ function requireLogin() {
 
 function requireAdmin() {
   if (!isLoggedIn() || !isAdmin()) {
-    window.location.href = "index.html";
+    window.location.href = "/";
     return false;
   }
   return true;
