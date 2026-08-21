@@ -64,7 +64,37 @@ if [ ! -e "$DEPLOY_DIR/current" ]; then
 fi
 
 echo "==> Configuring nginx"
-cp deploy/nginx.conf "/etc/nginx/sites-available/$DOMAIN"
+# Written inline (not copied from deploy/nginx.conf) since this script is run
+# via `curl | bash` with no local repo checkout to copy from. Keep this in
+# sync with deploy/nginx.conf in the repo.
+cat > "/etc/nginx/sites-available/$DOMAIN" <<'NGINX_EOF'
+server {
+    listen 80;
+    listen [::]:80;
+    server_name rahulcodes.qd.je;
+
+    root /var/www/library-management-system-/current/frontend;
+    index index.html;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /uploads/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+NGINX_EOF
 ln -sf "/etc/nginx/sites-available/$DOMAIN" "/etc/nginx/sites-enabled/$DOMAIN"
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
