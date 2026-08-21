@@ -31,6 +31,15 @@ systemctl enable --now mongod
 echo "==> Installing nginx, certbot, rsync, jq"
 apt-get install -y nginx certbot python3-certbot-nginx rsync jq
 
+# ufw defaults to deny-incoming. If it's active, open HTTP/HTTPS so nginx is
+# actually reachable — SSH (22) staying open is what let us get this far at
+# all, but 80/443 need their own explicit allow rules.
+if command -v ufw >/dev/null && ufw status | grep -q "Status: active"; then
+  echo "==> Opening 80/443 in ufw"
+  ufw allow 80/tcp
+  ufw allow 443/tcp
+fi
+
 echo "==> Installing pm2"
 npm install -g pm2
 
