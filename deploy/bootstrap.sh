@@ -21,7 +21,7 @@ echo "==> Installing MongoDB Community"
 # If this Ubuntu release is too new for MongoDB's official repo to recognize,
 # this falls back to the jammy (22.04) package set, which runs fine on newer
 # Ubuntu too.
-curl -fsSL https://pgp.mongodb.com/server-7.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
+curl -fsSL https://pgp.mongodb.com/server-7.0.asc | gpg --batch --yes --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
 echo "deb [signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" \
   > /etc/apt/sources.list.d/mongodb-org-7.0.list
 apt-get update
