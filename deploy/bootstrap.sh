@@ -43,6 +43,13 @@ fi
 echo "==> Installing pm2"
 npm install -g pm2
 
+# Registers pm2 itself as a systemd service that resurrects whatever was
+# saved via `pm2 save` (which deploy.sh runs after every deploy) on boot.
+# Without this, a server reboot leaves the app not running until someone
+# manually starts it.
+echo "==> Enabling pm2 to survive reboots"
+pm2 startup systemd -u root --hp /root | tail -n 1 | bash || true
+
 echo "==> Creating directory structure"
 mkdir -p "$DEPLOY_DIR/releases"
 mkdir -p "$SHARED_DIR/uploads"
@@ -107,6 +114,7 @@ NGINX_EOF
 ln -sf "/etc/nginx/sites-available/$DOMAIN" "/etc/nginx/sites-enabled/$DOMAIN"
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
+systemctl enable nginx
 systemctl reload nginx
 
 echo "==> Requesting HTTPS certificate"
