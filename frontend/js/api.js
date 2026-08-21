@@ -1,6 +1,11 @@
 // Shared across every page. Load this script before any other frontend/js/*.js file.
 
-const API_ROOT = "http://localhost:8080";
+// Local dev serves frontend and backend on different ports (needs the explicit
+// host + CORS). In production nginx puts both behind one origin, so requests
+// should be relative instead.
+const API_ROOT = ["localhost", "127.0.0.1"].includes(window.location.hostname)
+  ? "http://localhost:8080"
+  : "";
 const API_BASE_URL = `${API_ROOT}/api/v1`;
 
 const TOKEN_KEY = "lms_token";

@@ -1,0 +1,20 @@
+# What rsync should NOT push to the server on each release.
+# uploads/ is deliberately excluded — it's symlinked from shared/uploads on
+# the server instead, so persisted cover images survive every new release.
+
+node_modules/
+.git/
+.env
+.env.production
+uploads/
+logs/
+*.log
+npm-debug.log*
+
+.github/
+deploy/
+.claude/
+.DS_Store
+
+README.md
+DEPLOY.md
