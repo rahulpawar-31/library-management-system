@@ -39,17 +39,19 @@ userRouter.get(
   verifyToken,
   getSingleUser
 );
-// Update user 
-userRouter.put(
-  "/:id",
-  verifyToken,
-  updateUser
-);
-// Change password 
+// Change password
+// Must come before the "/:id" PUT route below — otherwise Express matches
+// "change-password" as an :id value and this handler is never reached.
 userRouter.put(
   "/change-password",
   verifyToken,
   changePassword
+);
+// Update user
+userRouter.put(
+  "/:id",
+  verifyToken,
+  updateUser
 );
 // Forgot password 
 userRouter.post(

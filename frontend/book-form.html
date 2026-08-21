@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Book</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="nav"></div>
+
+  <main class="container">
+    <div class="card form-wide">
+      <h1 id="form-title">Add Book</h1>
+      <div id="form-message"></div>
+
+      <form id="book-form" class="form form-wide">
+        <div class="field">
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" required minlength="3" />
+        </div>
+
+        <div class="field">
+          <label for="author-select">Author</label>
+          <select id="author-select" name="authorId" required>
+            <option value="">Loading authors…</option>
+          </select>
+          <div class="hint">Don't see the author you need? <a href="author-form.html">Add one first</a>.</div>
+        </div>
+
+        <div class="field">
+          <label for="published-year">Published Year</label>
+          <input type="number" id="published-year" name="publishedYear" min="0" max="2100" />
+        </div>
+
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea id="description" name="description"></textarea>
+        </div>
+
+        <div class="field" id="cover-field">
+          <label for="cover-image">Cover Image</label>
+          <input type="file" id="cover-image" name="coverImage" accept="image/png,image/jpeg,image/webp" required />
+          <div class="hint" id="cover-hint">JPG, PNG or WebP.</div>
+        </div>
+
+        <button type="submit" class="btn" id="submit-btn">Add Book</button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">Library Management System</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/books.js"></script>
+</body>
+</html>

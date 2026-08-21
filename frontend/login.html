@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log In</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="nav"></div>
+
+  <main class="container">
+    <div class="card card-narrow">
+      <h1>Log In</h1>
+      <div id="form-message"></div>
+
+      <form id="login-form" class="form">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required autocomplete="email" />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-block">Log In</button>
+      </form>
+
+      <div class="form-footer">
+        <a href="forgot-password.html">Forgot your password?</a><br />
+        Don't have an account? <a href="register.html">Register</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">Library Management System</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

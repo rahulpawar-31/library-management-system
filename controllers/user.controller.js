@@ -114,7 +114,7 @@ export const login = async(req, res)=> {
 
 export const getUsers = async (req, res) => {
   try{
-    const users = await User.find({ status: true, isDeleted: false}).select("-password");
+    const users = await User.find({ status: true, isDeleted: false}).select("-password -otp -otpExpiry");
     res.json(users);
   }catch(error){
     res.status(500).json({
@@ -131,7 +131,7 @@ export const getSingleUser = async (req, res) =>{
       _id: req.params.id,
       status: true,
       isDeleted: false
-    }).select("-password");
+    }).select("-password -otp -otpExpiry");
 
     if(!user){
       return res.status(404).json({ message: "User not found"});
@@ -158,7 +158,7 @@ export const updateUser = async (req, res) => {
       { _id: req.params.id},
       { $set: updateData },
       { new: true, runValidators: true }
-    ).select("-password");
+    ).select("-password -otp -otpExpiry");
 
     if (!user) return res.status(404).json({ message: "User not found" });
 

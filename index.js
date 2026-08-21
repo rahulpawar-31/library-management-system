@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 import "./cron/cron.delete.user.js"
 import "./cron/cron.delete.book.js";
 
@@ -16,6 +17,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // middlewares
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));

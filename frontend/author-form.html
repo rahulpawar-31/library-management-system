@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Author</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="nav"></div>
+
+  <main class="container">
+    <div class="card form-wide">
+      <h1 id="form-title">Add Author</h1>
+      <div id="form-message"></div>
+
+      <form id="author-form" class="form form-wide">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required minlength="2" />
+        </div>
+
+        <div class="field">
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" required></textarea>
+        </div>
+
+        <div class="field">
+          <label for="birth-date">Birth Date</label>
+          <input type="date" id="birth-date" name="birthDate" required />
+        </div>
+
+        <button type="submit" class="btn" id="submit-btn">Add Author</button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">Library Management System</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/authors.js"></script>
+</body>
+</html>

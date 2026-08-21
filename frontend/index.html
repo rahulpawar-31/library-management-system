@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library Catalog</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="nav"></div>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>Book Catalog</h1>
+    </div>
+
+    <div class="search-bar field">
+      <label for="search-input">Search</label>
+      <input type="search" id="search-input" placeholder="Search by title or author…" autocomplete="off" />
+    </div>
+
+    <div id="books-grid" class="grid">
+      <p>Loading books…</p>
+    </div>
+  </main>
+
+  <footer class="footer">Library Management System</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/books.js"></script>
+</body>
+</html>
