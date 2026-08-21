@@ -101,11 +101,22 @@ nginx -t
 systemctl reload nginx
 
 echo "==> Requesting HTTPS certificate"
-certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos \
-  --register-unsafely-without-email --redirect
+# Non-fatal on purpose: Let's Encrypt rate-limits are per registered domain,
+# and shared free-domain suffixes (like qd.je) can hit that limit from OTHER
+# users' activity. If so, the site still works fine over plain HTTP — just
+# re-run this certbot line by hand once the rate limit resets.
+if certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos \
+  --register-unsafely-without-email --redirect; then
+  SITE_URL="https://$DOMAIN"
+else
+  echo "⚠️  Certbot failed (often a Let's Encrypt rate limit on a shared domain"
+  echo "    suffix) — continuing without HTTPS. Retry any time with:"
+  echo "    certbot --nginx -d $DOMAIN --non-interactive --agree-tos --register-unsafely-without-email --redirect"
+  SITE_URL="http://$DOMAIN"
+fi
 
 echo ""
 echo "==> Bootstrap complete."
 echo "    1. Edit $SHARED_DIR/.env with real secrets (at least TOKEN_SECRET)."
 echo "    2. From your own machine: ./deploy.sh"
-echo "    3. Visit https://$DOMAIN"
+echo "    3. Visit $SITE_URL"
