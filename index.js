@@ -5,11 +5,13 @@ import mongoose from "mongoose";
 import cors from "cors";
 import "./cron/cron.delete.user.js"
 import "./cron/cron.delete.book.js";
+import "./cron/cron.overdue.reminder.js";
 
 
 import userRouter from "./routers/user.router.js";
 import bookRouter from "./routers/book.router.js";
 import authorRouter from "./routers/author.router.js";
+import loanRouter from "./routers/loan.router.js";
 
 
 
@@ -34,6 +36,7 @@ app.get("/", (req, res)=>{
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/books", bookRouter);
 app.use("/api/v1/authors", authorRouter);
+app.use("/api/v1/loans", loanRouter);
 
 
 mongoose.connect(process.env.MONGO_URI)

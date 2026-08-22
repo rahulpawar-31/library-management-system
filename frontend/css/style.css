@@ -589,6 +589,24 @@ tr:last-child td {
   border-color: var(--gold);
 }
 
+.badge-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.badge-overdue {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.badge-returned {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: var(--success);
+}
+
 /* ---------- Alerts / messages ---------- */
 .alert {
   border-radius: var(--radius);
