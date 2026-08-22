@@ -21,8 +21,10 @@ function renderNavbar() {
 
   if (loggedIn) {
     links.push(`<a href="/book-form" class="${linkClass("/book-form")}">Add Book</a>`);
+    links.push(`<a href="/my-loans" class="${linkClass("/my-loans")}">My Loans</a>`);
     if (admin) {
       links.push(`<a href="/admin-users" class="${linkClass("/admin-users")}">Manage Users</a>`);
+      links.push(`<a href="/loans" class="${linkClass("/loans")}">Active Loans</a>`);
     }
   }
 

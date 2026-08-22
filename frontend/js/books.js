@@ -72,13 +72,22 @@ async function loadBookDetail() {
 
   try {
     const book = await apiFetch(`/books/${id}`, { auth: false });
-    renderBookDetail(book);
+
+    let loan = null;
+    try {
+      const loanRes = await apiFetch(`/loans/book/${id}`, { auth: false });
+      loan = loanRes.data || null;
+    } catch {
+      // Loan status is a non-critical enhancement — book detail still renders without it.
+    }
+
+    renderBookDetail(book, loan);
   } catch (err) {
     container.innerHTML = `<div class="alert alert-error">${escapeHtml(err.message)}</div>`;
   }
 }
 
-function renderBookDetail(book) {
+function renderBookDetail(book, loan) {
   const container = document.getElementById("book-detail");
   const author = book.author || {};
 
@@ -86,14 +95,28 @@ function renderBookDetail(book) {
     ? `<a href="/author?id=${author._id}">${escapeHtml(author.name || "Unknown author")}</a>`
     : escapeHtml(author.name || "Unknown author");
 
-  const actions = isLoggedIn()
-    ? `
-      <div class="detail-actions">
-        <a class="btn btn-secondary" href="/book-form?id=${book._id}">Edit</a>
-        <button type="button" class="btn btn-danger" id="delete-book-btn">Delete</button>
-      </div>
-    `
-    : "";
+  const currentUser = getUser();
+  const isMine = !!(loan && currentUser && loan.user === currentUser._id);
+  const isOverdue = !!(loan && new Date(loan.dueDate) < new Date());
+
+  const availabilityBadge = !loan
+    ? `<span class="badge badge-returned">Available</span>`
+    : `<span class="badge ${isOverdue ? "badge-overdue" : "badge-active"}">${isMine ? "Borrowed by you" : "Currently borrowed"}</span>`;
+  const dueNote = loan ? ` · due ${new Date(loan.dueDate).toLocaleDateString()}` : "";
+
+  const actionButtons = [];
+  if (isLoggedIn()) {
+    if (!loan) {
+      actionButtons.push(`<button type="button" class="btn" id="borrow-btn">Borrow</button>`);
+    } else if (isMine) {
+      actionButtons.push(
+        `<button type="button" class="btn btn-secondary" id="return-btn" data-loan-id="${loan._id}">Return</button>`
+      );
+    }
+    actionButtons.push(`<a class="btn btn-secondary" href="/book-form?id=${book._id}">Edit</a>`);
+    actionButtons.push(`<button type="button" class="btn btn-danger" id="delete-book-btn">Delete</button>`);
+  }
+  const actions = actionButtons.length ? `<div class="detail-actions">${actionButtons.join("")}</div>` : "";
 
   container.innerHTML = `
     <div class="detail-layout">
@@ -103,6 +126,7 @@ function renderBookDetail(book) {
         <div class="detail-meta">
           by ${authorLink}${book.publishedYear ? ` · Published ${escapeHtml(String(book.publishedYear))}` : ""}
         </div>
+        <div class="detail-meta">${availabilityBadge}${dueNote}</div>
         <p>${escapeHtml(book.description || "No description available.")}</p>
         ${actions}
       </div>
@@ -113,6 +137,16 @@ function renderBookDetail(book) {
   if (deleteBtn) {
     deleteBtn.addEventListener("click", () => handleDeleteBook(book._id));
   }
+
+  const borrowBtn = document.getElementById("borrow-btn");
+  if (borrowBtn) {
+    borrowBtn.addEventListener("click", () => handleBorrowBook(book._id));
+  }
+
+  const returnBtn = document.getElementById("return-btn");
+  if (returnBtn) {
+    returnBtn.addEventListener("click", () => handleReturnBook(returnBtn.dataset.loanId));
+  }
 }
 
 async function handleDeleteBook(id) {
@@ -121,6 +155,24 @@ async function handleDeleteBook(id) {
   try {
     await apiFetch(`/books/${id}`, { method: "DELETE" });
     window.location.href = "/";
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+async function handleBorrowBook(bookId) {
+  try {
+    await apiFetch("/loans/checkout", { method: "POST", body: { bookId } });
+    loadBookDetail();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+async function handleReturnBook(loanId) {
+  try {
+    await apiFetch(`/loans/return/${loanId}`, { method: "PUT" });
+    loadBookDetail();
   } catch (err) {
     alert(err.message);
   }
