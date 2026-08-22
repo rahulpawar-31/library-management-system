@@ -152,10 +152,14 @@ export const updateUser = async (req, res) => {
     }
 
     // 2. Controlled update (only allow name to be changed)
-    const {password, role, email, ...updateData } = req.body;
-    
+    const allowedFields = ["name"];
+    const updateData = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) updateData[field] = req.body[field];
+    }
+
     const user = await User.findOneAndUpdate(
-      { _id: req.params.id},
+      { _id: req.params.id },
       { $set: updateData },
       { new: true, runValidators: true }
     ).select("-password -otp -otpExpiry");

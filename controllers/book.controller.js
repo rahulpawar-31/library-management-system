@@ -54,7 +54,17 @@ export const getSingleBook = async (req, res) =>{
 
 export const updateBooks = async (req, res) => {
   try{
-    const updateBook = await Book.findByIdAndUpdate({ _id: req.params.id, status: true},  req.body, { new: true});
+    const allowedFields = ["title", "author", "publishedYear", "description"];
+    const updateData = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) updateData[field] = req.body[field];
+    }
+
+    const updateBook = await Book.findOneAndUpdate(
+      { _id: req.params.id, status: true },
+      updateData,
+      { new: true, runValidators: true }
+    );
     if(!updateBook) {
       return res.status(404).json({
         message: "Book not found"

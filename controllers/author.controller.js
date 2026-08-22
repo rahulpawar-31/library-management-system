@@ -86,10 +86,16 @@ export const getSingleAuthor = async (req, res) =>{
 // update
 export const updateAuthor = async (req, res) => {
   try{
+    const allowedFields = ["name", "bio", "birthDate"];
+    const updateData = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) updateData[field] = req.body[field];
+    }
+
     const author = await Author.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      { new: true }
+      updateData,
+      { new: true, runValidators: true }
     );
 
     if(!author){
